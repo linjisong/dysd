@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<exception-config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns="http://dysd.org/schema/exception"
+	xsi:schemaLocation="http://dysd.org/schema/exception http://dysd.org/schema/exception.xsd">
+	
+	<exception code="DYSD020000" description="数据访问层异常" localeKey="dysd.dao" 
+		causes="java.sql.SQLException org.apache.ibatis.exceptions.PersistenceException org.springframework.dao.DataAccessException">
+		<exception code="DYSD020001" description="未注册的输出参数" localeKey="dysd.dao.not_found_ouput_params"/>
+		<exception code="DYSD020002" description="数据库产品名称为空" localeKey="dysd.dao.database_product_name_is_empty"/>
+		<exception code="DYSD020003" description="未配置数据库方言映射" localeKey="dysd.dao.not_config_dialect_mapping"/>
+		<exception code="DYSD020004" description="没有找到数据库产品对应的方言" localeKey="dysd.dao.not_found_dialect"/>
+		<exception code="DYSD020005" description="分页查询时计算总记录条数出现异常" localeKey="dysd.dao.calculate_totals"/>
+		<exception code="DYSD020006" description="处理存储过程输出参数时出现异常" localeKey="dysd.dao.handler_output_params"/>
+		<exception code="DYSD020007" description="未找到对应的数据源" localeKey="dysd.dao.not_found_datasource"/>
+		<exception code="DYSD020008" description="使用OGNL解析需要设置到数据库中的参数时出现异常" localeKey="dysd.dao.ognl_resolver_db_params"/>
+		<exception code="DYSD020009" description="初始化Mybatis集成数据源时出现异常" localeKey="dysd.dao.init_mybatis_datasource"/>
+		<exception code="DYSD020010" description="获取数据库元信息异常" localeKey="dysd.dao.database_meta"/>
+		<exception code="DYSD020011" description="获取表元信息异常" localeKey="dysd.dao.table_meta"/>
+		<exception code="DYSD020012" description="单次读取数据量超出范围" localeKey="dysd.dao.fetch_size_out_of_range"/>
+		<exception code="DYSD020013" description="批量执行的参数不正确" localeKey="dysd.dao.batch_param_is_error"/>
+		<exception code="DYSD020014" description="批量注解@SqlRefs使用不正确" localeKey="dysd.dao.batch_param_sqlrefs_error"/>
+		<exception code="DYSD020015" description="批量执行参数个数不匹配" localeKey="dysd.dao.batch_param_size_not_equal"/>
+		<exception code="DYSD020016" description="没有找到sqlId" localeKey="dysd.dao.not_found_mybatis_sqlId"/>
+		<exception code="DYSD020017" description="一次批量执行必须在同一个数据源" localeKey="dysd.dao.batch_execute_must_in_some_datasource"/>
+		<exception code="DYSD020018" description="含批量注解，但返回值不是整型数组" localeKey="dysd.dao.not_match_the_return_type_and_batch_param"/>
+		<exception code="DYSD020019" description="未找到可以处理表达式的处理器" localeKey="dysd.dao.not_found_expression_handler"/>
+		<exception code="DYSD020020" description="SQL配置函数的参数个数不合法，只能多少个" localeKey="dysd.dao.sql_config_function_params_count_error"/>
+		<exception code="DYSD020021" description="SQL配置函数的参数个数不合法，至少多少个" localeKey="dysd.dao.sql_config_function_params_atleast_count_error"/>
+		<exception code="DYSD020022" description="SQL配置函数未找到" localeKey="dysd.dao.sql_config_function_not_register"/>
+		
+	</exception>
+</exception-config>

@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<mapper xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns="http://dysd.org/schema/sqlmapper"
+	xmlns:e="http://dysd.org/schema/sqlmapper-extend"
+	xsi:schemaLocation="http://dysd.org/schema/sqlmapper http://dysd.org/schema/sqlmapper.xsd
+		http://dysd.org/schema/sqlmapper-extend http://dysd.org/schema/sqlmapper-extend.xsd"
+	namespace="org.dysd.dao.mybatis.mapper.IExampleDao">
+	
+	<select id="selectString" resultType="string">
+		select PARAM_NAME, $decode{#{paramName}, '1', 'A', '2', 'B','C'} AS DECODE_TEST , #{(params.paramName)}
+		  from BF_PARAM_ENUM_DEF
+		<e:db type="MySQL">
+			<if test="null != paramName and '' != paramName">
+			 where PARAM_NAME $like{#{paramName, jdbcType=VARCHAR}}
+			</if>
+		</e:db>
+		<e:db type="! MySQL">
+			<if test="null != paramName and '' != paramName">
+			 where PARAM_CODE = 'DISPLAY_AREA'
+			</if>
+		</e:db>
+		order by SEQNO
+	</select>
+	
+	<e:db type="MySQL">
+		<select id="selectString2" resultType="string">
+			select PARAM_NAME, $decode{${paramCode}, '1', 'A', '2', 'B','C'} as decode_test, $concat{PARAM_CODE, PARAM_NAME} from BF_param_enum_def
+			<e:db type="MySQL Oracle">
+				<if test="null != paramCode and '' != paramCode">
+				 where param_code like $CONCAT{#{paramCode, jdbcType=VARCHAR},PARAM_NAME}
+				</if>
+			</e:db>
+			<if test="null != paramCode and '' != paramCode">
+				 and param_code $rlike{#{paramCode, jdbcType=VARCHAR}}
+			</if>
+			order by SEQNO
+		</select>
+	</e:db>
+	
+	
+	<select id="selectStringList" resultType="string">
+		select PARAM_NAME from bf_param_enum_def 
+		 where param_group = #{paramGroup, jdbcType=VARCHAR}
+		 order by SEQNO
+	</select>
+	
+	<select id="selectStringArray" resultType="string">
+		select PARAM_NAME from bf_param_enum_def 
+		 where param_group = #{paramGroup, jdbcType=VARCHAR}
+		 order by SEQNO
+	</select>
+	
+	<select id="selectIntArray" resultType="int">
+		select SEQNO from bf_param_enum_def 
+		 where param_group = #{paramGroup, jdbcType=VARCHAR}
+		 order by SEQNO
+	</select>
+	
+	<select id="selectOneJavaBean" resultType="org.dysd.dao.mybatis.mapper.ParamEnumDef">
+		select * from bf_param_enum_def 
+		 where param_code = #{paramCode, jdbcType=VARCHAR}
+		 order by SEQNO
+	</select>
+	
+	<select id="selectOneMap">
+		select * from bf_param_enum_def 
+		 where param_code = #{paramCode, jdbcType=VARCHAR}
+		 order by SEQNO
+	</select>
+	
+	<resultMap id="ParamEnumDef" type="org.dysd.dao.mybatis.mapper.ParamEnumDef">
+		<id property="paramCode" column="PARAM_CODE" jdbcType="VARCHAR"/>
+		<collection property="datas" columnPrefix="DATA" ofType="org.dysd.dao.mybatis.mapper.ParamEnumData"/>
+	</resultMap>
+	
+	<select id="selectOneNestJavaBean" resultMap="ParamEnumDef">
+		SELECT  A.PARAM_CODE, 
+				A.PARAM_NAME, 
+				A.PARAM_GROUP, 
+				A.PARAM_ATTR, 
+				A.EDITABLE, 
+				A.SEQNO, 
+				A.DES,
+				B.PARAM_CODE AS DATA_PARAM_CODE, 
+				B.DATA_CODE AS DATA_DATA_CODE, 
+				B.DATA_TEXT AS DATA_DATA_TEXT, 
+				B.DATA_PARAM AS DATA_DATA_PARAM, 
+				B.SEQNO AS DATA_SEQNO, 
+				B.DES AS DATA_DES
+ 		  FROM BF_PARAM_ENUM_DEF A
+          JOIN BF_PARAM_ENUM_DATA B
+            ON A.PARAM_CODE = B.PARAM_CODE
+         WHERE A.PARAM_CODE = #{paramCode, jdbcType=VARCHAR}
+         ORDER BY A.SEQNO, B.SEQNO
+	</select>
+	
+	<select id="selectListJavaBean" resultType="org.dysd.dao.mybatis.mapper.ParamEnumDef">
+		select * from bf_param_enum_def 
+		 where PARAM_GROUP = #{paramGroup, jdbcType=VARCHAR}
+		 order by SEQNO
+	</select>
+	
+	<select id="selectListMap">
+		select * from bf_param_enum_def 
+		 where PARAM_GROUP = #{paramGroup, jdbcType=VARCHAR}
+		 order by SEQNO
+	</select>
+	
+	<select id="selectListNestJavaBean" resultMap="ParamEnumDef">
+		SELECT  A.PARAM_CODE, 
+				A.PARAM_NAME, 
+				A.PARAM_GROUP, 
+				A.PARAM_ATTR, 
+				A.EDITABLE, 
+				A.SEQNO, 
+				A.DES,
+				B.PARAM_CODE AS DATA_PARAM_CODE, 
+				B.DATA_CODE AS DATA_DATA_CODE, 
+				B.DATA_TEXT AS DATA_DATA_TEXT, 
+				B.DATA_PARAM AS DATA_DATA_PARAM, 
+				B.SEQNO AS DATA_SEQNO, 
+				B.DES AS DATA_DES
+ 		  FROM BF_PARAM_ENUM_DEF A
+          JOIN BF_PARAM_ENUM_DATA B
+            ON A.PARAM_CODE = B.PARAM_CODE
+         WHERE A.PARAM_GROUP = #{paramGroup, jdbcType=VARCHAR}
+         order by A.SEQNO, B.SEQNO
+	</select>
+	
+	<select id="select" resultType="org.dysd.dao.mybatis.mapper.ParamEnumDef">
+		select * from bf_param_enum_def 
+		 where param_code = #{paramCode, jdbcType=VARCHAR}
+		 order by SEQNO
+	</select>
+	
+	<insert id="insert" >
+		INSERT INTO BF_PARAM_ENUM_DEF
+		 (PARAM_CODE, PARAM_NAME, PARAM_GROUP, PARAM_ATTR, EDITABLE, SEQNO, DES)
+		 VALUES
+		(#{paramCode, jdbcType=VARCHAR},
+		 #{paramName, jdbcType=VARCHAR},
+		 #{paramGroup, jdbcType=VARCHAR},
+		 #{paramAttr,jdbcType=VARCHAR},
+		 #{editable,jdbcType=VARCHAR},
+		 #{seqno, jdbcType=INTEGER},
+		 #{des, jdbcType=VARCHAR})
+	</insert>
+	
+	<update id="update">
+		update BF_PARAM_ENUM_DEF
+           set PARAM_NAME = #{paramName, jdbcType=VARCHAR},
+               PARAM_GROUP = #{paramGroup, jdbcType=VARCHAR},
+               PARAM_ATTR = #{paramAttr, jdbcType=VARCHAR},
+               EDITABLE = #{editable,jdbcType=VARCHAR},
+               SEQNO = #{seqno, jdbcType=INTEGER},
+               DES = #{des, jdbcType=VARCHAR}
+         where PARAM_CODE = #{paramCode, jdbcType=VARCHAR}
+	</update>
+	
+	<delete id="delete">
+		delete from BF_PARAM_ENUM_DEF
+         where PARAM_CODE = #{paramCode, jdbcType=VARCHAR}
+	</delete>
+	
+	<select id="selectParamEnumDatas" resultType="org.dysd.dao.mybatis.mapper.ParamEnumData">
+		select * from bf_param_enum_data where param_code = #{paramCode, jdbcType=VARCHAR}
+	</select>
+	
+	<insert id="batchSingleSql" >
+		INSERT INTO bf_param_enum_data(PARAM_CODE,DATA_CODE,DATA_TEXT,DATA_PARAM,SEQNO,DES)VALUES
+		(#{item.paramCode, jdbcType=VARCHAR},
+		 #{item.dataCode, jdbcType=VARCHAR},
+		 #{item.dataText, jdbcType=VARCHAR},
+		 #{item.dataParam,jdbcType=VARCHAR},
+		 #{item.seqno,jdbcType=INTEGER},
+		 #{item.des, jdbcType=VARCHAR})
+	</insert>
+	
+	<insert id="batchSingleSql3" >
+		INSERT INTO bf_param_enum_data(PARAM_CODE,DATA_CODE,DATA_TEXT,DATA_PARAM,SEQNO,DES)VALUES
+		(#{paramCode, jdbcType=VARCHAR},
+		 #{item.dataCode, jdbcType=VARCHAR},
+		 #{item.dataText, jdbcType=VARCHAR},
+		 #{item.dataParam,jdbcType=VARCHAR},
+		 #{item.seqno,jdbcType=INTEGER},
+		 #{item.des, jdbcType=VARCHAR})
+	</insert>
+	
+	<delete id="deleteParamEnumDef">
+		delete from bf_param_enum_def where PARAM_CODE = #{paramCode, jdbcType=VARCHAR}
+	</delete>
+	<delete id="deleteParamEnumDatas">
+		delete from bf_param_enum_data where PARAM_CODE = #{paramCode, jdbcType=VARCHAR}
+	</delete>
+	
+	<delete id="deleteMultiParamEnumDef">
+		delete from bf_param_enum_def where PARAM_CODE in 
+		<foreach collection="paramCodes" open="(" close=")" separator="," item="paramCode">
+		#{paramCode, jdbcType=VARCHAR}
+		</foreach>
+	</delete>
+	<delete id="deleteMultiParamEnumDatas">
+		delete from bf_param_enum_data where PARAM_CODE in
+		<foreach collection="paramCodes" open="(" close=")" separator="," item="paramCode">
+		#{paramCode, jdbcType=VARCHAR}
+		</foreach>
+	</delete>
+	
+	<insert id="batchMultiSql1" >
+		 INSERT INTO BF_PARAM_ENUM_DEF
+		 (PARAM_CODE, PARAM_NAME, PARAM_GROUP, PARAM_ATTR, EDITABLE, SEQNO, DES)
+		 VALUES
+		(#{paramCode, jdbcType=VARCHAR},
+		 #{item.paramName, jdbcType=VARCHAR},
+		 #{item.paramGroup, jdbcType=VARCHAR},
+		 #{item.paramAttr,jdbcType=VARCHAR},
+		 #{item.editable, jdbcType=VARCHAR},
+		 #{item.seqno, jdbcType=INTEGER},
+		 #{item.des, jdbcType=VARCHAR})
+	</insert>
+	
+	<insert id="batchMultiSql2" >
+		INSERT INTO BF_PARAM_ENUM_DATA(PARAM_CODE,DATA_CODE,DATA_TEXT,DATA_PARAM,SEQNO,DES)VALUES
+		(#{paramCode, jdbcType=VARCHAR},
+		 #{item.dataCode, jdbcType=VARCHAR},
+		 #{item.dataText, jdbcType=VARCHAR},
+		 #{item.dataParam,jdbcType=VARCHAR},
+		 #{item.seqno,jdbcType=INTEGER},
+		 #{item.des, jdbcType=VARCHAR})
+	</insert>
+</mapper>

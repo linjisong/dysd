@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xsd:schema xmlns="http://dysd.org/schema/sqlmapper-extend"
+	targetNamespace="http://dysd.org/schema/sqlmapper-extend"
+	xmlns:s="http://dysd.org/schema/sqlmapper"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+	version="1.0">
+
+	<!-- 导入由mybatis官方DTD转换而来的XSD命名空间 -->
+	<xsd:import namespace="http://dysd.org/schema/sqlmapper" 
+		schemaLocation="http://dysd.org/schema/sqlmapper.xsd"/>
+	
+	<xsd:element name="db">
+		<xsd:annotation><xsd:documentation><![CDATA[
+			定义一个新的db元素，有一个枚举列表的属性type，表示数据库类型，以!开头表示否定
+			可以配置SQL文本、statement级元素、script级元素以及其它扩展空间元素等子元素
+		]]></xsd:documentation></xsd:annotation>
+		<xsd:complexType mixed="true">
+			<xsd:choice maxOccurs="unbounded">
+				<xsd:group ref="s:statementGroup" minOccurs="0" maxOccurs="1"/>
+				<xsd:group ref="s:dynaScriptGroup" minOccurs="0" maxOccurs="1" />
+			</xsd:choice>
+			<xsd:attribute name="type" use="required">
+				<xsd:simpleType>
+					<xsd:list>
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:enumeration value="!"/>
+								<xsd:enumeration value="Oracle"/>
+								<xsd:enumeration value="MySQL"/>
+								<xsd:enumeration value="DB2"/>
+								<xsd:enumeration value="H2"/>
+								<xsd:enumeration value="SybaseASE"/>
+								<xsd:enumeration value="SybaseIQ"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:list>
+				</xsd:simpleType>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>

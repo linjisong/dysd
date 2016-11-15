@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<exception-config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns="http://dysd.org/schema/exception"
+	xsi:schemaLocation="http://dysd.org/schema/exception http://dysd.org/schema/exception.xsd">
+	<!-- 没有配置的异常 -->
+	<exception code="DYSD999999" description="没有配置的异常" localeKey="dysd.unconfig_exception" causes="java.lang.Throwable"/>
+	
+	<!-- 基础工具层异常，以DYSD01开始 -->
+	<exception code="DYSD010000" description="基础工具层异常" localeKey="dysd.util">
+		<exception code="DYSD010001" description="JDK版本过低" localeKey="dysd.util.jdk_version_not_supported"/>
+		<exception code="DYSD010002" description="不支持的字符集" localeKey="dysd.util.charset_not_supported"/>
+		<exception code="DYSD010003" description="日期解析错误" localeKey="dysd.util.data_parse_error"/>
+		<exception code="DYSD010004" description="资源加载异常" localeKey="dysd.util.load_resources_error"/>
+		<exception code="DYSD010005" description="类加载异常" localeKey="dysd.util.load_class_error"/>
+		<exception code="DYSD010006" description="调用构造器异常" localeKey="dysd.util.invoke_constructor_error"/>
+		<exception code="DYSD010007" description="类属性访问异常" localeKey="dysd.util.visit_field_error"/>
+		<exception code="DYSD010008" description="方法访问异常" localeKey="dysd.util.visit_method_error"/>
+		<exception code="DYSD010009" description="XML解析异常" localeKey="dysd.util.xml_parse_error"/>
+		<exception code="DYSD010010" description="Spring容器未初始化" localeKey="dysd.util.spring_not_initialized"/>
+		<exception code="DYSD010011" description="获取Spring容器管理的Bean失败" localeKey="dysd.util.get_spring_bean"/>
+	</exception>
+</exception-config>

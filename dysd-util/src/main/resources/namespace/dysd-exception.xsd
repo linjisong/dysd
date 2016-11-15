@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xsd:schema xmlns="http://dysd.org/schema/exception"
+	targetNamespace="http://dysd.org/schema/exception"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+	elementFormDefault="qualified" version="1.0">
+	
+	<xsd:element name="exception-config">
+		<xsd:annotation><xsd:documentation><![CDATA[
+			定义异常配置元素
+		]]></xsd:documentation></xsd:annotation>
+		<xsd:complexType>
+			<xsd:choice maxOccurs="unbounded">
+				<xsd:element ref="exception" minOccurs="1" maxOccurs="unbounded"/>
+				<xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:choice>
+			<xsd:anyAttribute namespace="##other" processContents="lax"/>
+		</xsd:complexType>
+	</xsd:element>
+   	
+   	<xsd:element name="exception">
+   		<xsd:annotation><xsd:documentation><![CDATA[
+			定义异常元素
+		]]></xsd:documentation></xsd:annotation>
+   		<xsd:complexType>
+   			<xsd:sequence>
+   				<xsd:element ref="exception" minOccurs="0" maxOccurs="unbounded"/>
+   				<xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+   			</xsd:sequence>
+        	<xsd:attribute name="code" use="required">
+        		<xsd:annotation><xsd:documentation><![CDATA[
+					异常代码，需要全局唯一，十位字符
+				]]></xsd:documentation></xsd:annotation>
+            	<xsd:simpleType>
+            		<xsd:restriction base="xsd:NMTOKEN">
+            			<xsd:pattern value="[0-9A-Za-z]{10}"/>
+            		</xsd:restriction>
+            	</xsd:simpleType>
+            </xsd:attribute>
+            <xsd:attribute name="localeKey" type="xsd:string" use="optional">
+            	<xsd:annotation><xsd:documentation><![CDATA[
+					国际化信息文件中的key值
+				]]></xsd:documentation></xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="level" use="optional">
+            	<xsd:annotation><xsd:documentation><![CDATA[
+					定义异常级别数据类型为枚举类型（INFO、ERROR、FATAL）
+				]]></xsd:documentation></xsd:annotation>
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:NMTOKEN">
+			   			<xsd:enumeration value="INFO">
+			   				<xsd:annotation><xsd:documentation><![CDATA[
+								业务异常，只需要将异常信息提示给业务人员即可，一般由数据校验组件或者开发人员抛出
+							]]></xsd:documentation></xsd:annotation>
+			   			</xsd:enumeration>
+			   			<xsd:enumeration value="ERROR">
+			   				<xsd:annotation><xsd:documentation><![CDATA[
+								运行时异常，影响本模块，或者局部非重点功能，一般需要技术人员跟踪
+							]]></xsd:documentation></xsd:annotation>
+			   			</xsd:enumeration>
+			   			<xsd:enumeration value="FATAL">
+			   				<xsd:annotation><xsd:documentation><![CDATA[
+								严重异常，影响整个系统正常运行或者重要模块功能
+							]]></xsd:documentation></xsd:annotation>
+			   			</xsd:enumeration>
+			   		</xsd:restriction>	
+				</xsd:simpleType>
+            </xsd:attribute>
+            <xsd:attribute name="causes" type="xsd:NMTOKENS" use="optional">
+            	<xsd:annotation><xsd:documentation><![CDATA[
+					定义异常的可能原因列表，为Throwable类的子类名称，如有多个，使用空格分开
+				]]></xsd:documentation></xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="description" type="xsd:string" use="optional">
+            	<xsd:annotation><xsd:documentation><![CDATA[
+					说明
+				]]></xsd:documentation></xsd:annotation>
+            </xsd:attribute>
+            <xsd:anyAttribute namespace="##other" processContents="lax"/>
+        </xsd:complexType>
+   	</xsd:element>
+</xsd:schema>

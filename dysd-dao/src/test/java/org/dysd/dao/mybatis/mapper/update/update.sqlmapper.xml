@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.dysd.dao.mybatis.mapper.update.IUpdateDao">
+	
+	<select id="select">
+		select * from BF_PARAM_ENUM_DEF
+		<where>
+			<if test="null != paramCode and '' != paramCode">
+			and PARAM_CODE = #{paramCode, jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
+	
+	<insert id="insert" >
+		INSERT INTO BF_PARAM_ENUM_DEF
+		 (PARAM_CODE, PARAM_NAME, PARAM_GROUP, PARAM_ATTR, SEQNO, DES)
+		 VALUES
+		(#{paramCode, jdbcType=VARCHAR},
+		 #{paramName, jdbcType=VARCHAR},
+		 #{paramGroup, jdbcType=VARCHAR},
+		 #{paramAttr,jdbcType=VARCHAR},
+		 #{seqno, jdbcType=INTEGER},
+		 #{des, jdbcType=VARCHAR})
+	</insert>
+	
+	<update id="update">
+		update BF_PARAM_ENUM_DEF
+           set PARAM_NAME = #{paramName, jdbcType=VARCHAR},
+               PARAM_GROUP = #{paramGroup, jdbcType=VARCHAR},
+               PARAM_ATTR = #{paramAttr, jdbcType=VARCHAR},
+               DES = #{des, jdbcType=VARCHAR}
+         where PARAM_CODE = #{paramCode, jdbcType=VARCHAR}
+	</update>
+	
+	<delete id="delete">
+		delete from BF_PARAM_ENUM_DEF
+         where PARAM_CODE = #{paramCode, jdbcType=VARCHAR}
+	</delete>
+</mapper>

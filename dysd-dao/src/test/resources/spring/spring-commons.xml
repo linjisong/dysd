@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+	
+	<!-- 扫描通过注解配置的Bean -->
+    <context:component-scan base-package="org.dysd"/>
+    
+	<!-- 配置属性文件，后续配置可以通过${var}的形式引用属性文件中的值 -->
+	<bean id="propertyConfigurer" class="org.dysd.util.spring.EncryptPropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>  
+				<value>classpath:dysd-config.properties</value>
+			</list>
+		</property>
+	</bean>
+	<!-- 国际化的消息资源文件 -->
+	<bean id="messageSource" p:cacheSeconds="60" class="org.dysd.util.spring.DysdReloadableResourceBundleMessageSource">
+	</bean>
+</beans>

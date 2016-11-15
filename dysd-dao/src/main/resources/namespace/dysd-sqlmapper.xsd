@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xsd:schema xmlns="http://dysd.org/schema/sqlmapper"
+	targetNamespace="http://dysd.org/schema/sqlmapper"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+	elementFormDefault="qualified" version="1.0">
+
+	<xsd:element name="mapper">
+		<xsd:annotation>
+			<xsd:documentation><![CDATA[
+			定义mapper根元素
+		]]></xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:choice maxOccurs="unbounded">
+				<xsd:group ref="statementGroup" maxOccurs="1" minOccurs="0"/>
+				<xsd:any namespace="##other" processContents="strict" minOccurs="0" maxOccurs="1">
+					<xsd:annotation><xsd:documentation>
+					<![CDATA[其它命名空间的任意元素]]>
+					</xsd:documentation></xsd:annotation>
+				</xsd:any>
+			</xsd:choice>
+			<xsd:attribute name="namespace" type="xsd:string" use="required">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+						命名空间
+					]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="property">
+		<xsd:complexType>
+			<xsd:attribute name="name" use="required" />
+			<xsd:attribute name="value" use="required" />
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="typeAlias">
+		<xsd:complexType>
+			<xsd:attribute name="alias" use="required" />
+			<xsd:attribute name="type" use="required" />
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:group name="statementGroup">
+		<xsd:choice>
+			<xsd:element name="cache-ref">
+				<xsd:complexType>
+					<xsd:attribute name="namespace" use="required" />
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="cache">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element minOccurs="0" maxOccurs="unbounded" ref="property" />
+					</xsd:sequence>
+					<xsd:attribute name="type" />
+					<xsd:attribute name="eviction" />
+					<xsd:attribute name="flushInterval" />
+					<xsd:attribute name="size" />
+					<xsd:attribute name="readOnly" />
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="resultMap" minOccurs="0" maxOccurs="unbounded" >
+				<xsd:complexType>
+					<xsd:group ref="resultMapGroup"/>
+					<xsd:attribute name="id" use="required" />
+					<xsd:attribute name="type" use="required" />
+					<xsd:attribute name="extends" />
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="parameterMap" minOccurs="0" maxOccurs="unbounded" >
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element minOccurs="0" maxOccurs="unbounded" name="parameter">
+							<xsd:complexType>
+								<xsd:attribute name="property" use="required" />
+								<xsd:attribute name="javaType" />
+								<xsd:attribute name="jdbcType" />
+								<xsd:attribute name="mode" type="parameterModeType" />
+								<xsd:attribute name="resultMap" />
+								<xsd:attribute name="scale" />
+								<xsd:attribute name="typeHandler" />
+							</xsd:complexType>
+						</xsd:element>
+					</xsd:sequence>
+					<xsd:attribute name="id" use="required" />
+					<xsd:attribute name="type" use="required" />
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="sql" minOccurs="0" maxOccurs="unbounded" >
+				<xsd:complexType mixed="true">
+					<xsd:group ref="dynaScriptGroup" minOccurs="0" maxOccurs="unbounded" />
+					<xsd:attribute name="id" use="required" />
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="select" minOccurs="0" maxOccurs="unbounded">
+				<xsd:complexType mixed="true">
+					<xsd:group ref="dynaScriptGroup" minOccurs="0" maxOccurs="unbounded" />
+					<xsd:attribute name="id" use="required" />
+					<xsd:attribute name="parameterMap" />
+					<xsd:attribute name="parameterType" />
+					<xsd:attribute name="resultMap" />
+					<xsd:attribute name="resultType" />
+					<xsd:attribute name="resultSetType">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:token">
+								<xsd:enumeration value="FORWARD_ONLY" />
+								<xsd:enumeration value="SCROLL_INSENSITIVE" />
+								<xsd:enumeration value="SCROLL_SENSITIVE" />
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:attribute>
+					<xsd:attribute name="statementType" type="statementType"/>
+					<xsd:attribute name="fetchSize" />
+					<xsd:attribute name="timeout" />
+					<xsd:attribute name="flushCache" type="xsd:boolean"/>
+					<xsd:attribute name="useCache" type="xsd:boolean"/>
+					<xsd:attribute name="databaseId" />
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="insert" minOccurs="0" maxOccurs="unbounded">
+				<xsd:complexType mixed="true">
+					<xsd:choice minOccurs="0" maxOccurs="unbounded">
+						<xsd:element name="selectKey">
+							<xsd:complexType mixed="true">
+								<xsd:group ref="dynaScriptGroup" minOccurs="0" maxOccurs="unbounded" />
+								<xsd:attribute name="resultType" />
+								<xsd:attribute name="statementType" type="statementType">
+								</xsd:attribute>
+								<xsd:attribute name="keyProperty" />
+								<xsd:attribute name="order">
+									<xsd:simpleType>
+										<xsd:restriction base="xsd:token">
+											<xsd:enumeration value="BEFORE" />
+											<xsd:enumeration value="AFTER" />
+										</xsd:restriction>
+									</xsd:simpleType>
+								</xsd:attribute>
+								<xsd:attribute name="databaseId" />
+							</xsd:complexType>
+						</xsd:element>
+						<xsd:group ref="dynaScriptGroup" minOccurs="0" maxOccurs="unbounded" />
+					</xsd:choice>
+					<xsd:attribute name="id" use="required" />
+					<xsd:attribute name="parameterMap" />
+					<xsd:attribute name="parameterType" />
+					<xsd:attribute name="timeout" />
+					<xsd:attribute name="flushCache" type="xsd:boolean">
+					</xsd:attribute>
+					<xsd:attribute name="statementType" type="statementType">
+					</xsd:attribute>
+					<xsd:attribute name="keyProperty" />
+					<xsd:attribute name="useGeneratedKeys" type="xsd:boolean">
+					</xsd:attribute>
+					<xsd:attribute name="keyColumn" />
+					<xsd:attribute name="databaseId" />
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="update" minOccurs="0" maxOccurs="unbounded">
+				<xsd:complexType mixed="true">
+					<xsd:group ref="dynaScriptGroup" minOccurs="0" maxOccurs="unbounded" />
+					<xsd:attribute name="id" use="required" />
+					<xsd:attribute name="parameterMap" />
+					<xsd:attribute name="parameterType" />
+					<xsd:attribute name="timeout" />
+					<xsd:attribute name="flushCache" type="xsd:boolean">
+					</xsd:attribute>
+					<xsd:attribute name="statementType" type="statementType">
+					</xsd:attribute>
+					<xsd:attribute name="databaseId" />
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="delete" minOccurs="0" maxOccurs="unbounded">
+				<xsd:complexType mixed="true">
+					<xsd:group ref="dynaScriptGroup" minOccurs="0" maxOccurs="unbounded" />
+					<xsd:attribute name="id" use="required" />
+					<xsd:attribute name="parameterMap" />
+					<xsd:attribute name="parameterType" />
+					<xsd:attribute name="timeout" />
+					<xsd:attribute name="flushCache" type="xsd:boolean">
+					</xsd:attribute>
+					<xsd:attribute name="statementType" type="statementType">
+					</xsd:attribute>
+					<xsd:attribute name="databaseId" />
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:choice>
+	</xsd:group>
+
+	<xsd:group name="resultMapGroup">
+		<xsd:sequence>
+			<xsd:element name="constructor" minOccurs="0">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="idArg" minOccurs="0" maxOccurs="unbounded">
+							<xsd:complexType>
+								<xsd:attribute name="javaType" />
+								<xsd:attribute name="column" />
+								<xsd:attribute name="jdbcType" />
+								<xsd:attribute name="typeHandler" />
+								<xsd:attribute name="select" />
+								<xsd:attribute name="resultMap" />
+							</xsd:complexType>
+						</xsd:element>
+						<xsd:element name="arg" minOccurs="0" maxOccurs="unbounded">
+							<xsd:complexType>
+								<xsd:attribute name="javaType" />
+								<xsd:attribute name="column" />
+								<xsd:attribute name="jdbcType" />
+								<xsd:attribute name="typeHandler" />
+								<xsd:attribute name="select" />
+								<xsd:attribute name="resultMap" />
+							</xsd:complexType>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="id" minOccurs="0" maxOccurs="unbounded">
+				<xsd:complexType>
+					<xsd:attribute name="property" />
+					<xsd:attribute name="javaType" />
+					<xsd:attribute name="column" />
+					<xsd:attribute name="jdbcType" />
+					<xsd:attribute name="typeHandler" />
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="result" minOccurs="0" maxOccurs="unbounded">
+				<xsd:complexType>
+					<xsd:attribute name="property" />
+					<xsd:attribute name="javaType" />
+					<xsd:attribute name="column" />
+					<xsd:attribute name="jdbcType" />
+					<xsd:attribute name="typeHandler" />
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="association" minOccurs="0" maxOccurs="unbounded">
+				<xsd:complexType>
+					<xsd:group ref="resultMapGroup"/>
+					<xsd:attribute name="property" use="required" />
+					<xsd:attribute name="column" />
+					<xsd:attribute name="javaType" />
+					<xsd:attribute name="jdbcType" />
+					<xsd:attribute name="select" />
+					<xsd:attribute name="resultMap" />
+					<xsd:attribute name="typeHandler" />
+					<xsd:attribute name="notNullColumn" />
+					<xsd:attribute name="columnPrefix" />
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="collection" minOccurs="0" maxOccurs="unbounded">
+				<xsd:complexType>
+					<xsd:group ref="resultMapGroup"/>
+					<xsd:attribute name="property" use="required" />
+					<xsd:attribute name="column" />
+					<xsd:attribute name="javaType" />
+					<xsd:attribute name="ofType" />
+					<xsd:attribute name="jdbcType" />
+					<xsd:attribute name="select" />
+					<xsd:attribute name="resultMap" />
+					<xsd:attribute name="typeHandler" />
+					<xsd:attribute name="notNullColumn" />
+					<xsd:attribute name="columnPrefix" />
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="discriminator" minOccurs="0">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="case" maxOccurs="unbounded">
+							<xsd:complexType>
+								<xsd:group ref="resultMapGroup"/>
+								<xsd:attribute name="value" use="required" />
+								<xsd:attribute name="resultMap" />
+								<xsd:attribute name="resultType" />
+							</xsd:complexType>
+						</xsd:element>
+					</xsd:sequence>
+					<xsd:attribute name="column" />
+					<xsd:attribute name="javaType" use="required" />
+					<xsd:attribute name="jdbcType" />
+					<xsd:attribute name="typeHandler" />
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	
+	<xsd:group name="dynaScriptGroup">
+		<xsd:choice>
+			<xsd:element name="include">
+				<xsd:complexType>
+					<xsd:attribute name="refid" use="required" />
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="trim">
+				<xsd:complexType mixed="true">
+					<xsd:group ref="dynaScriptGroup" minOccurs="0" maxOccurs="unbounded" />
+					<xsd:attribute name="prefix" />
+					<xsd:attribute name="prefixOverrides" />
+					<xsd:attribute name="suffix" />
+					<xsd:attribute name="suffixOverrides" />
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="where">
+				<xsd:complexType mixed="true">
+					<xsd:group ref="dynaScriptGroup" minOccurs="0" maxOccurs="unbounded" />
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="set">
+				<xsd:complexType mixed="true">
+					<xsd:group ref="dynaScriptGroup" minOccurs="0" maxOccurs="unbounded" />
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="foreach">
+				<xsd:complexType mixed="true">
+					<xsd:group ref="dynaScriptGroup" minOccurs="0" maxOccurs="unbounded" />
+					<xsd:attribute name="collection" use="required" />
+					<xsd:attribute name="item" />
+					<xsd:attribute name="index" />
+					<xsd:attribute name="open" />
+					<xsd:attribute name="close" />
+					<xsd:attribute name="separator" />
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="choose">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="when" minOccurs="1" maxOccurs="unbounded" >
+							<xsd:complexType mixed="true">
+								<xsd:group ref="dynaScriptGroup" minOccurs="0" maxOccurs="unbounded" />
+								<xsd:attribute name="test" type="xsd:string" use="required" />
+							</xsd:complexType>
+						</xsd:element>
+						<xsd:element name="otherwise" minOccurs="0" maxOccurs="1">
+							<xsd:complexType mixed="true">
+								<xsd:group ref="dynaScriptGroup" minOccurs="0" maxOccurs="unbounded" />
+							</xsd:complexType>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="if">
+				<xsd:complexType mixed="true">
+					<xsd:group ref="dynaScriptGroup" minOccurs="0" maxOccurs="unbounded" />
+					<xsd:attribute name="test" type="xsd:string" use="required" />
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:any namespace="##other" processContents="strict">
+				<xsd:annotation><xsd:documentation>
+				<![CDATA[其它命名空间的任意元素]]>
+				</xsd:documentation></xsd:annotation>
+			</xsd:any>
+		</xsd:choice>
+	</xsd:group>
+
+	<xsd:simpleType name="parameterModeType">
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="IN" />
+			<xsd:enumeration value="OUT" />
+			<xsd:enumeration value="INOUT" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="statementType">
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="STATEMENT" />
+			<xsd:enumeration value="PREPARED" />
+			<xsd:enumeration value="CALLABLE" />
+		</xsd:restriction>
+	</xsd:simpleType>
+</xsd:schema>

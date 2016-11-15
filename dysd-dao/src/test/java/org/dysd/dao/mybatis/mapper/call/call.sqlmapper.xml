@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.dysd.dao.mybatis.mapper.call.ICallDao">
+
+	<select id="call" statementType="CALLABLE">
+		{call BF_TEST_PACKAGE.BF_TEST_PROCEDURE(
+			#{input, jdbcType=VARCHAR}, 
+			#{output1, mode=OUT, jdbcType=VARCHAR}, 
+			#{output2, mode=OUT, jdbcType=VARCHAR}, 
+			#{rs1, mode=OUT, jdbcType=CURSOR}, 
+			#{rs2, mode=OUT, jdbcType=CURSOR}
+		)}
+	</select>
+</mapper>

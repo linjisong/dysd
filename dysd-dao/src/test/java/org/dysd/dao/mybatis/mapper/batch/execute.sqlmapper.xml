@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.dysd.dao.mybatis.mapper.batch.IExecuteDao">
+	<!-- 添加角色 -->
+	<insert id="dInsertRole">
+		INSERT INTO BF_ROLE(ROLE_ID, ROLE_NAME, DES) 
+		 VALUEs(#{role.roleId, jdbcType=INTEGER}, #{role.roleName, jdbcType=VARCHAR}, #{role.des, jdbcType=VARCHAR})
+	</insert>
+	<!-- 修改角色 -->
+	<update id="dUpdateRole">
+	    UPDATE BF_ROLE
+	       SET ROLE_NAME = #{role.roleName, jdbcType=VARCHAR},
+	           DES = #{role.des, jdbcType=VARCHAR}
+	     WHERE ROLE_ID = #{role.roleId, jdbcType=INTEGER}
+	</update>
+	<!-- 添加角色权限(菜单)关系 -->
+	<insert id="dInsertRolePermission">
+		INSERT INTO BF_ROLE_PERM(ROLE_ID, PERM_ID)
+		  VALUEs(#{role.roleId, jdbcType=INTEGER}, #{perm.permId, jdbcType=INTEGER})
+	</insert>
+	<!-- 删除单个角色的角色约束关系 -->
+	<delete id="dDeleteRoleLimit">
+		<choose>
+			<when test="_databaseId == 'ase' or _databaseId == 'iq'">
+			<!-- Sybase中关联删除语法与其它数据库不同 -->
+				DELETE FROM BF_ROLE_LIMIT
+				  FROM BF_ROLE_LIMIT A1
+				  JOIN BF_ROLE_LIMIT A2
+					ON A1.LIMIT_NO = A2.LIMIT_NO
+				   AND A2.ROLE_ID = #{roleId, jdbcType=INTEGER}
+			</when>
+			<otherwise>
+				DELETE FROM BF_ROLE_LIMIT
+         		 WHERE LIMIT_NO IN(SELECT LIMIT_NO FROM BF_ROLE_LIMIT WHERE ROLE_ID = #{roleId, jdbcType=INTEGER})	
+			</otherwise>
+		</choose>
+	</delete>
+	<!-- 删除单个角色的角色与角色(分配)关系 -->
+	<delete id="dDeleteRoleRoleAllot">
+		DELETE FROM BF_ROLE_ROLE_ALLOT WHERE ROLE_ID = #{roleId, jdbcType=INTEGER}
+	</delete>
+	<!-- 删除单个角色的角色权限(菜单)关系 -->
+	<delete id="dDeleteRolePermission">
+		DELETE FROM BF_ROLE_PERM WHERE ROLE_ID = #{roleId, jdbcType=INTEGER}
+	</delete>
+	<!-- 删除单个角色的用户角色关系 -->
+	<delete id="dDeleteUserRole">
+		DELETE FROM BF_USER_ROLE WHERE ROLE_ID = #{roleId, jdbcType=INTEGER}
+	</delete>
+	<!-- 删除单个角色 -->
+	<delete id="dDeleteRole">
+		DELETE FROM BF_ROLE WHERE ROLE_ID = #{roleId, jdbcType=INTEGER}
+	</delete>
+</mapper>

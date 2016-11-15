@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	<!-- Spring公共配置文件，开启自动扫描、配置属性文件、国际化文件、初始化、日志等组件 -->
+	<import resource="spring-commons.xml"/>
+	
+	<!-- dysd配置文件 -->
+	<import resource="spring-dysd.xml"/>
+	
+	<!-- 异常相关的Spring文件 -->
+	<import resource="spring-exception.xml"/>
+	
+	<!-- 对象关系映射相关的Spring文件，包括数据源、Mybatis模板、事务配置等 -->
+	<import resource="spring-orm.xml"/>
+</beans>

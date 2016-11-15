@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.dysd.dao.mybatis.mapper.batch.IBatchDao">
+	<insert id="batch1" >
+		INSERT INTO BF_PARAM_ENUM_DATA(PARAM_CODE,DATA_CODE,DATA_TEXT,DATA_PARAM,SEQNO,DES)VALUES
+		(#{paramCode, jdbcType=VARCHAR},
+		 #{item.dataCode, jdbcType=VARCHAR},
+		 #{item.dataText, jdbcType=VARCHAR},
+		 #{item.dataParam,jdbcType=VARCHAR},
+		 #{item.seqno,jdbcType=INTEGER},
+		 #{item.des, jdbcType=VARCHAR})
+	</insert>
+	
+	<insert id="batch2-first" >
+		 INSERT INTO BF_PARAM_ENUM_DEF
+		 (PARAM_CODE, PARAM_NAME, PARAM_GROUP, PARAM_ATTR, SEQNO, DES)
+		 VALUES
+		(#{paramCode, jdbcType=VARCHAR},
+		 #{item.paramName, jdbcType=VARCHAR},
+		 #{item.paramGroup, jdbcType=VARCHAR},
+		 #{item.paramAttr,jdbcType=VARCHAR},
+		 #{item.seqno, jdbcType=INTEGER},
+		 #{item.des, jdbcType=VARCHAR})
+	</insert>
+	
+	<insert id="batch2-second" >
+		INSERT INTO BF_PARAM_ENUM_DATA(PARAM_CODE,DATA_CODE,DATA_TEXT,DATA_PARAM,SEQNO,DES)VALUES
+		(#{paramCode, jdbcType=VARCHAR},
+		 #{item.dataCode, jdbcType=VARCHAR},
+		 #{item.dataText, jdbcType=VARCHAR},
+		 #{item.dataParam,jdbcType=VARCHAR},
+		 #{item.seqno,jdbcType=INTEGER},
+		 #{item.des, jdbcType=VARCHAR})
+	</insert>
+	
+	<!-- 数据清理 -->
+	<delete id="delete">
+		delete FROM BF_PARAM_ENUM_DATA
+         where PARAM_CODE = #{paramCode, jdbcType=VARCHAR}
+	</delete>
+	<delete id="deleteDef">
+		delete FROM BF_PARAM_ENUM_DEF
+         where PARAM_CODE = #{paramCode, jdbcType=VARCHAR}
+	</delete>
+	<!--  查询列表 -->
+	<select id="selectList">
+		select * from BF_PARAM_ENUM_DATA
+		<where>
+			<if test="null != paramCode and '' != paramCode">
+			and PARAM_CODE = #{paramCode, jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
+</mapper>
