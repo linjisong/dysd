@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 #DYSD
 主旨在简化程序员开发任务
 
@@ -40,6 +39,3 @@
 
 
 有太多不完善的，虽然贻笑方家，但也算是自己的一些实践。
-=======
-#dysd
->>>>>>> branch 'master' of https://git.oschina.net/linjisong/dysd.git
