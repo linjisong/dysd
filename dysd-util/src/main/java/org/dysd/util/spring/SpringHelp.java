@@ -1,6 +1,8 @@
 package org.dysd.util.spring;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -266,6 +268,31 @@ public class SpringHelp implements ApplicationContextAware{
 	/*package*/ static void setPlaceholderPropertis(Properties placeholderPropertis) {
 		SpringHelp.placeholderPropertis = placeholderPropertis;
 	}
+	
+	/**
+	 * 添加SpEL表达式执行时的变量
+	 * @param name
+	 * @param variable
+	 */
+	public static void addSpelVariable(String name, Object variable){
+		checkSpelVariable(name);
+		SpelHelp.customVariables.put(name, variable);
+	}
+	
+	/**
+	 * 移除SpEL表达式执行时的变量
+	 * @param name
+	 */
+	public static void removeSpelVariable(String name){
+		checkSpelVariable(name);
+		SpelHelp.customVariables.remove(name);
+	}
+	
+	private static void checkSpelVariable(String name){
+		if(SpelHelp.protectedVariableNames.contains(name)){
+			Throw.throwException(ExceptionCodes.DYSD010012, name);
+		}
+	}
 
 	/**
 	 * Spel表达式内部帮助类
@@ -274,8 +301,12 @@ public class SpringHelp implements ApplicationContextAware{
 		private static final ThreadLocal<StandardEvaluationContext> context = new ThreadLocal<StandardEvaluationContext>();
 		private static final ThreadLocal<Map<String, Object>> variables = new ThreadLocal<Map<String, Object>>();
 		private static final ExpressionParser expressionParser = new SpelExpressionParser();
-		private static final Tool tool = new Tool();
+		private static final Map<String, Object> customVariables = new HashMap<String, Object>();
 		private static final Cache expressionCache = Tool.CACHE.getCache(SpelHelp.class);
+		private static final List<String> protectedVariableNames = Arrays.asList("Tool");
+		static{
+			customVariables.put("Tool", new Tool());
+		}
 		
 		private static void initialStandardEvaluationContext(StandardEvaluationContext evaluationContext) throws BeansException {
 			if(applicationContext.getAutowireCapableBeanFactory() instanceof ConfigurableBeanFactory){
@@ -367,7 +398,7 @@ public class SpringHelp implements ApplicationContextAware{
 					}
 				}
 			}
-			evaluationContext.setVariable("Tool", tool);
+			evaluationContext.setVariables(customVariables);
 			if(null != vars){
 				evaluationContext.setVariables(vars);
 			}

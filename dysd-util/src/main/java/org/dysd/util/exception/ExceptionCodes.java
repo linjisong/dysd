@@ -76,4 +76,8 @@ public class ExceptionCodes {
 	 * 获取Spring容器管理的Bean失败
 	 */
 	public static final String DYSD010011 = "DYSD010011";
+	/**
+	 * 不能修改被保护的SpEL变量
+	 */
+	public static final String DYSD010012 = "DYSD010012";
 }

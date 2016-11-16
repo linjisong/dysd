@@ -18,5 +18,6 @@
 		<exception code="DYSD010009" description="XML解析异常" localeKey="dysd.util.xml_parse_error"/>
 		<exception code="DYSD010010" description="Spring容器未初始化" localeKey="dysd.util.spring_not_initialized"/>
 		<exception code="DYSD010011" description="获取Spring容器管理的Bean失败" localeKey="dysd.util.get_spring_bean"/>
+		<exception code="DYSD010012" description="不能修改受保护的SpEL变量" localeKey="dysd.util.cannot_modify_protected_spel_variable"/>
 	</exception>
 </exception-config>
