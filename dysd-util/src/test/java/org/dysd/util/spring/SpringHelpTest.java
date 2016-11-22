@@ -16,7 +16,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(locations={
 	"classpath:applicationContext.xml"	
 })
-@Component
+@Component  // 该测试类本身作为一个Spring管理的bean，便于后面的测试
 public class SpringHelpTest {
 	
 	public String getBeanValue(String arg){
@@ -25,38 +25,36 @@ public class SpringHelpTest {
 
 	@Test
 	public void testSpelHelp(){
+		// 准备root对象 {key1 : 'root-value1', key2 : 'root-value2'}
 		Root root = new Root("root-value1", "root-value2");
-		
+		// 准备一般变量
 		Map<String, Object> vars = new HashMap<String, Object>();
 		vars.put("var1", "value1");
 		vars.put("var2", "value2");
 		
-		// 直接计算表达式
+		// 直接计算简单表达式
 		Object rs = SpringHelp.evaluate("1+2");
 		Assert.assertEquals(3, rs);
-		
+		// 按指定类型计算简单表达式
 		rs = SpringHelp.evaluate("1+2", String.class);
 		Assert.assertEquals("3", rs);
-		
-		// 访问含根变量的表达式
+		// 访问root对象的属性
 		rs = SpringHelp.evaluate(root, "key1");
 		Assert.assertEquals("root-value1", rs);
-		
-		// 访问变量
+		// 访问一般变量
 		rs = SpringHelp.evaluate(root, "#var2", vars);
 		Assert.assertEquals("value2", rs);
-		
+		// 访问root对象
 		rs = SpringHelp.evaluate(root, "#root", vars);
 		Assert.assertTrue(rs == root);
-		
+		// 访问Spring管理的bean，同时传入的参数又是root对象的属性
 		rs = SpringHelp.evaluate(root, "@springHelpTest.getBeanValue(key2)", vars);
 		Assert.assertEquals("beanValue:root-value2", rs);
-		
+		// 设置root对象的属性
 		SpringHelp.setValue(root, "key1", "new-root-value1");
 		rs = SpringHelp.evaluate(root, "key1");
 		Assert.assertEquals("new-root-value1", rs);
-		
-		//访问工具类
+		//访问工具类，其中Tool.DATE.getDate()的作用是获取当前日期
 		rs = SpringHelp.evaluate("#Tool.DATE.getDate()");
 		Assert.assertEquals(Tool.DATE.getDate(), rs);
 	}

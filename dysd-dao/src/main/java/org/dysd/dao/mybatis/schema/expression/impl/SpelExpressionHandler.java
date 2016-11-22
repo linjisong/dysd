@@ -29,18 +29,34 @@ import org.dysd.util.spring.SpringHelp;
  */
 public class SpelExpressionHandler implements IExpressionHandler {
 	
+	/**
+	 * 直接返回true，也就是说不做进一步判断，支持所有的${(exp)}、#{(exp)}内的表达式
+	 * 由于支持所有表达式，实际上起到了一种拦截作用，所以需要注意，注册该实现时必须最低优先级
+	 */
 	@Override
 	public boolean isSupport(String expression) {
 		return true;
 	}
 
+	/**
+	 * 对SqlMapper配置中的表达式求值
+	 */
 	@Override
 	public Object eval(String expression, Object parameter, String databaseId) {
+		/**
+		 * 如果以spel:为前缀，则将mybatis包装后的参数、数据库id以及表达式自身一起封装一个新的root对象
+		 * 因此在exp表达式中可以通过params.paramName、databaseId等形式访问
+		 */
 		if(expression.toLowerCase().startsWith("spel:")){
 			expression = expression.substring(5);
 			Root root = new Root(parameter, databaseId, expression);
 			return SpringHelp.evaluate(root, expression);
-		}else{
+		}
+		/**
+		 * 否则将databaseId作为一个特殊名称的变量
+		 * 因此在exp表达式中可以通过paramName、#databaseId等形式访问
+		 */
+		else{
 			Map<String, Object> vars = new HashMap<String, Object>();
 			vars.put("databaseId", databaseId);
 			return SpringHelp.evaluate(parameter, expression, vars);
@@ -50,9 +66,7 @@ public class SpelExpressionHandler implements IExpressionHandler {
 	public class Root {
 
 		private final Object params;
-		
 		private final String databaseId;
-		
 		private final String expression;
 
 		public Root(Object params, String databaseId, String expression) {

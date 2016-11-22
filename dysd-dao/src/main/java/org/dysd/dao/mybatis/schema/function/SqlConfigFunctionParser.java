@@ -35,12 +35,12 @@ import org.dysd.util.logger.CommonLogger;
 public class SqlConfigFunctionParser {
 	
 	/**
-	 * 设别SQL配置函数的正则表达式
+	 * 设别SQL配置函数的正则表达式，匹配形如$fn_name{args}的配置
 	 */
 	private static final String pattern = new StringBuilder()
 			.append("(?<=\\s+|^)")//肯定逆序环视(?<=...)，这里表示前面为开头或空白字符
 			.append("\\$") // 转义为"$"符号本身，和下面一起表示以$开头，并且紧跟（不能出现空白字符）一个字母或下划线开头的字母数字下划线组合
-				.append("(") //捕获型分组1开始，用于捕获形似$name{args}里面的参数name
+				.append("(") //捕获型分组1开始，用于捕获形似$name{args}里面的名称name
 					.append("[_a-z](?:[_0-9a-z])*") //一个字母或下划线开头的字母数字下划线组合，其中 (?:...)表示非捕获型分组
 				.append(")")//捕获型分组1结束
 			.append("\\s*\\{\\s*")//表示"{"字符，前后可以有任意空白字符
